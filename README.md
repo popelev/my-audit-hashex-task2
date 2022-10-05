@@ -3,7 +3,7 @@
 #### C1-01. Withraw all deposited tokens by owner (Critical)
 
 **Description:**
-Owner can set `rewardToken` equels to `depositToken` by `setRewardToken` function and withdraw all deposited tokens from `FindProblem` contract.
+Owner can set `rewardToken` equels to `depositToken` by `setRewardToken` function and withdraw all deposited tokens from `FindProblem` contract with `withdrawUnclaimedRewards` function.
 
 ```solidity
 function setRewardToken(address _rewardToken) external onlyOwner {
