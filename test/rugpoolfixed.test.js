@@ -2,7 +2,7 @@ const {ethers} = require("hardhat");
 const {expect} = require("chai");
 const {time, loadFixture} = require("@nomicfoundation/hardhat-network-helpers");
 
-describe("Task. Before Fix", async function () {
+describe("Task. After Fix", async function () {
     let depositContract, depositToken, rewardToken;
     let accounts;
     let owner, feeCollector, user1, user2;
@@ -21,7 +21,7 @@ describe("Task. Before Fix", async function () {
         rewardToken = await Token.deploy();
 
         const Deposit = await ethers.getContractFactory(
-            "FindProblemSource",
+            "FindProblemFixed",
             owner.address
         );
         depositContract = await Deposit.deploy(
@@ -65,7 +65,7 @@ describe("Task. Before Fix", async function () {
                 .approve(depositContract.address, 10e5);
         });
 
-        it("Rugpull Availible", async () => {
+        it("Rugpull not availible", async () => {
             await depositContract.connect(user1).deposit(10);
             await depositContract.connect(user2).deposit(10);
 
@@ -73,14 +73,13 @@ describe("Task. Before Fix", async function () {
                 await depositToken.balanceOf(depositContract.address)
             ).to.equal(20);
 
-            await depositContract.setRewardToken(depositToken.address);
-
-            let balance = await depositToken.balanceOf(depositContract.address);
-            await depositContract.withdrawUnclaimedRewards(balance);
+            await expect(
+                depositContract.setRewardToken(depositToken.address)
+            ).to.be.revertedWith("Reward token equal to deposit token");
 
             expect(
                 await depositToken.balanceOf(depositContract.address)
-            ).to.equal(0);
+            ).to.equal(20);
         });
     });
 });

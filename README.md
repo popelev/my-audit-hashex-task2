@@ -1,13 +1,27 @@
-# Sample Hardhat Project
+# My audit practice. Hashex Academy. Task 2
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+#### C1-01. Withraw all deposited tokens by owner (Critical)
 
-Try running some of the following tasks:
+**Description:**
+Owner can set `rewardToken` equels to `depositToken` by `setRewardToken` function and withdraw all deposited tokens from `FindProblem` contract.
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
+```solidity
+function setRewardToken(address _rewardToken) external onlyOwner {
+    require(_rewardToken != address(0), "Zero address");
+    rewardToken = _rewardToken;
+    emit RewardToken(_rewardToken);
+}
+
+function withdrawUnclaimedRewards(uint256 amount) external onlyOwner {
+    ERC20(rewardToken).transfer(owner, amount);
+    }
+}
+
+```
+
+**Recommendation:**
+Add additional `require` to `setRewardToken` function
+
+```solidity
+require(_rewardToken != depositToken, "Reward token equal to deposit token");
 ```
